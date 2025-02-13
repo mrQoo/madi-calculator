@@ -50,19 +50,21 @@ if price:
 
     # 📌 색상 스타일 적용
     def highlight_rows(row):
-        idx = df.index.get_loc(row.name)
-        if row["마디 번호"] == "시가":
-            return ["background-color: lightgreen"] * len(row)
-        elif idx < 24:
-            return ["background-color: lightsalmon"] * len(row)
-        else:
-            return ["background-color: lightblue"] * len(row)
+        try:
+            idx = df.index.get_loc(row.name)
+            if row["마디 번호"] == "시가":
+                return ["background-color: lightgreen"] * len(row)
+            elif idx < 24:
+                return ["background-color: lightsalmon"] * len(row)
+            else:
+                return ["background-color: lightblue"] * len(row)
+        except KeyError:
+            return [""] * len(row)
 
     styled_df = df.style.apply(highlight_rows, axis=1)
 
-    # 📊 표 출력
-    df.index = range(1, len(df) + 1)  # 인덱스 제거
-    st.dataframe(styled_df, use_container_width=True)
+    # 📊 표 출력 (st.dataframe() 대신 st.table() 사용)
+    st.table(styled_df)
 
     # 📥 엑셀 다운로드 기능
     @st.cache_data
